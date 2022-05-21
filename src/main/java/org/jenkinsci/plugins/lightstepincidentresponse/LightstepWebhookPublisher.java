@@ -25,6 +25,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.json.simple.JSONValue;
 import org.json.simple.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -68,11 +69,14 @@ public class LightstepWebhookPublisher extends Notifier {
 			throws InterruptedException, IOException {
 
 		Result result = build.getResult();
-		String res = result.toString();
+		String res = "";
 
-		if (result == null) {
+		if (result != null) {
+			res = result.toString();
+		} else {
 			log.severe("No build result.");
 		}
+
 		String webHookUrl = this.webHookUrl;
 		if (webHookUrl.isEmpty()) {
 			log.severe("No webhook URL provided.");
@@ -132,6 +136,8 @@ public class LightstepWebhookPublisher extends Notifier {
 						status = "aborted";
 					}
 					break;
+				default:
+					log.info("Build result did not match. Default case executed.");
 			}
 			if (!severity.isEmpty() && !status.isEmpty()) {
 				event.put("status", status);
@@ -150,13 +156,19 @@ public class LightstepWebhookPublisher extends Notifier {
 			Request request = new Request.Builder().url(url).post(body).build();
 			OkHttpClient client = new OkHttpClient();
 			Response response = client.newCall(request).execute();
-			String responseBody = response.body().string();
+			ResponseBody responseBody = response.body();
+			String resp = "";
+			if (  responseBody != null ) {
+				resp = responseBody.string();
+			} else {
+				log.info("No response from webhook");
+			}
 
 			try {
 				if (response.code() == 200) {
-					log.info("Webhook invocation successful " + responseBody);
+					log.info("Webhook invocation successful " + resp);
 				} else {
-					log.severe("Webhook invocation failed " + responseBody);
+					log.severe("Webhook invocation failed " + resp);
 				}
 			} catch (Exception e) {
 				log.severe("Exception occurred " + url + e);
