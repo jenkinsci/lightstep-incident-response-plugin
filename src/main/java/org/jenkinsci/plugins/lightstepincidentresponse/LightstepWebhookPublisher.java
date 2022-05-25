@@ -56,7 +56,7 @@ public class LightstepWebhookPublisher extends Notifier {
 		this.failureSeverity = failureSeverity;
 		this.unstableSeverity = unstableSeverity;
 		this.abortedSeverity = abortedSeverity;
-		this.selectedStatus = onFailure || onUnstable || onAborted;
+		this.selectedStatus = onFailure || onUnstable || onAborted || onResolve;
 	}
 
 	@Override
