@@ -13,14 +13,13 @@
     <relativePath/>
   </parent>
   <properties>
-    <revision>1.0</revision>
-    <changelist>-SNAPSHOT</changelist>
+    <changelist>999999-SNAPSHOT</changelist>
     <jenkins.version>2.319.1</jenkins.version>
     <java.level>8</java.level>
   </properties>
   <groupId>lightstep-plugin</groupId>
   <artifactId>lightstep-incident-response</artifactId>
-  <version>${revision}${changelist}</version>
+  <version>${changelist}</version>
   <packaging>hpi</packaging>
 
   <name>Lightstep Incident Response Plugin</name>
